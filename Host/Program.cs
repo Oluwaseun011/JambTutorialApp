@@ -1,3 +1,4 @@
+using Infrastructure.Context;
 using Application.Interfaces.Repositories;
 using Infrastructure.Repositories;
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<AppDbContext>();
 
 var app = builder.Build();
 
