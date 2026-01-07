@@ -17,23 +17,20 @@ namespace Host.Controllers
             _departmentService = departmentService;
         }
         [HttpPost]
-        public ActionResult<DepartmentResponseModel> CreateDepartment(DepartmentRequestModel model)
+        public async Task<IActionResult> CreateDepartment(DepartmentRequestModel model)
         {
-            DepartmentResponseModel department = _departmentService.Add(model);
-            if (department == null)
+            var respone = await _departmentService.Add(model);
+            if (respone == null)
             {
                 return BadRequest();
             }
-            else
-            {
-                return Ok(department);
-            }
+            return Ok(respone);
 
         }
         [HttpGet("id")]
         public async Task<ActionResult> GetDepartment(Guid id)
         {
-           var departmentDto = _departmentService.GetDepartment(id);
+           var departmentDto = await _departmentService.GetDepartment(id);
             if (departmentDto == null)
             {
                 return BadRequest();
@@ -54,12 +51,12 @@ namespace Host.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDepartments()
         {
-            var departmentDtos = _departmentService.GetAllDepartment();
-            if (departmentDtos.Count < 1)
+            var response = await _departmentService.GetAllDepartments();
+            if (response.Data == null)
             {
                 return BadRequest();
             }
-            return Ok(departmentDtos);
+            return Ok(response);
         }
 
 
