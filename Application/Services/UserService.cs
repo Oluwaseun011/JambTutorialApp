@@ -30,7 +30,6 @@ namespace Application.Services
         public BaseResponse<LoginResponseModel> Login(LoginRequestModel model)
         {
             var userName = _userRepository.GetUserByUsername(model.UserName);
-            {
                 if(userName == null)
                 {
                     return new BaseResponse<LoginResponseModel>
@@ -57,7 +56,6 @@ namespace Application.Services
                     }
 
                 };
-            }
         }
     }
 }
