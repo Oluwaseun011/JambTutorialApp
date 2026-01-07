@@ -1,4 +1,5 @@
 ﻿using Application.Dtos;
+using Application.Interfaces.Repositories;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,11 @@ namespace Application.Interfaces.Services
 {
     public interface ISessionService
     {
-        Task AddSession(SessionRequestModel model);
+
+        Task<SessionResponseModel> AddSession(SessionRequestModel model);
         Task Delete(Guid Id);
-        Task<List<Session>> GetAllSessions();
+        Task Update(Guid Id);
+         Task<Session?> Get(Guid Id);
+        Task<ICollection<Session>> GetAllSessions();
     }
 }
