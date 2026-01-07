@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Dtos;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace Application.Interfaces.Services
 {
     public interface IDepartmentService
     {
-        public void Add(Department department);
-        public Department GetDepartment(Guid id);
-        public ICollection<Department> GetAllDepartment();
-        public ICollection<Department> GetDepartmentsByExamType(Guid examTypeId);
+        Task<BaseResponse<DepartmentResponseModel>> Add(DepartmentRequestModel department);
+        Task<BaseResponse<DepartmentDto?>> GetDepartment(Guid id);
+        Task<BaseResponse<ICollection<DepartmentDto>>> GetAllDepartments();
+        Task<BaseResponse<ICollection<Department>>> GetDepartmentsByExamType(Guid examTypeId);
     }
 }
