@@ -41,7 +41,7 @@ namespace Infrastructure.Repositories
         public void UpdateSession(Domain.Entities.Session session)
 
         {
-             _dbContext.Update(session);
+            _dbContext.Update(session);
         }
 
         
