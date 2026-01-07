@@ -1,6 +1,8 @@
 using Infrastructure.Context;
 using Application.Interfaces.Repositories;
 using Infrastructure.Repositories;
+using Application.Interfaces.Services;
+using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<AppDbContext>();
 
