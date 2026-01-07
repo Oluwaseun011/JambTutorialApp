@@ -17,5 +17,5 @@ namespace Application.Dtos
         public ICollection<StudentExamType> ExamTypes { get; set; } = new HashSet<StudentExamType>();
     }
     public record DepartmentRequestModel(ExamType ExamType, string Name, string Subjects);
-    public record DepartmentResponseModel(Guid Id, Guid ExamTypeId, string Name, string Subjects);
+    public record DepartmentResponseModel(string Name, string Subjects);
 }
