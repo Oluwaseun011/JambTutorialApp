@@ -18,7 +18,8 @@ namespace Application.Services
             _repository = repository;
         }
         //IDepartmentRepository _repository = new DepartmentRepository();
-        public BaseResponse<DepartmentResponseModel> Add(DepartmentRequestModel departmentRequestModel)
+       
+        async Task<BaseResponse<DepartmentResponseModel>> IDepartmentService.Add(DepartmentRequestModel departmentRequestModel)
         {
             Department department = new Department
             {
@@ -31,7 +32,7 @@ namespace Application.Services
             return new BaseResponse<DepartmentResponseModel>
             {
                 Status = true,
-                Message = $"Department {departmentRequestModel.Name} created successfully.",
+                Message = $"Department created successfully.",
                 Data = new DepartmentResponseModel
                 (
                     departmentRequestModel.Name,
@@ -40,22 +41,46 @@ namespace Application.Services
             };
         }
 
-
-        public ICollection<Department> GetAllDepartments()
+        async Task<BaseResponse<ICollection<DepartmentDto>>> IDepartmentService.GetAllDepartments()
         {
-            ICollection<Department> departments = (ICollection<Department>) _repository.GetDepartmentsAsync();
-            return departments;
+            _repository.GetDepartmentsAsync();
+            return new BaseResponse<ICollection<DepartmentDto>>
+            {
+                Status = true,
+                Message = "",
+                Data = new List<DepartmentDto>
+                (
+                    
+                    )
+            };
         }
 
-        public Department? GetDepartment(Guid id)
+        async Task<BaseResponse<DepartmentDto?>> IDepartmentService.GetDepartment(Guid id)
         {
             _repository.GetDepartmentAsync(id);
-            
+            return new BaseResponse<DepartmentDto?>
+            { 
+                Status = true,
+                Message = "",
+                Data = new DepartmentDto
+                (
+          
+                    )
+            };
         }
 
-        public ICollection<Department> GetDepartmentsByExamType(Guid examTypeId)
+        async Task<BaseResponse<ICollection<Department>>> IDepartmentService.GetDepartmentsByExamType(Guid examTypeId)
         {
             _repository.GetDepartmentsAsyncByExamType(examTypeId);
+            return new BaseResponse<ICollection<Department>>
+            {
+                Status = true,
+                Message = "",
+                Data = new List<Department>
+                (
+
+                    )
+            };
         }
     }
 }
