@@ -15,6 +15,6 @@ namespace Application.Interfaces.Repositories
 
           Task<User?> GetUser(Guid id);
 
-          Task UpdateUser(User user;
+          Task UpdateUser(User user);
     }
 }

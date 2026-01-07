@@ -44,6 +44,9 @@ namespace Infrastructure.Repositories
             _dbContext.Update(session);
         }
 
-        
+        public void Updatesession(Domain.Entities.Session session)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

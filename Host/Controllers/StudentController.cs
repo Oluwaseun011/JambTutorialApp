@@ -14,25 +14,25 @@ namespace Host.Controllers
         {
             _studentService = studentService;
         }
-    }
-    [HttpPost]
-    public async Task<IActionResult> RegisterAsync(RegisterStudentRequestModel model)
+        [HttpPost]
+        public async Task<IActionResult> RegisterAsync(RegisterStudentRequestModel model)
         {
             var response = await _studentService.RegisterAsync(model);
             return Created();
         }
 
-    [HttpGet("username")]
-    public async Task<IActionResult> GetStudentAsync(string username)
+        [HttpGet("username")]
+        public async Task<IActionResult> GetStudentAsync(string username)
         {
             var response = await _studentService.GetStudentAsync(username);
-            if(response is  null) return NotFound();
+            if (response is null) return NotFound();
             return Ok(response);
         }
-    [HttpGet]
-    public async Task<IActionResult> GetAllStudentsAsync()
+        [HttpGet]
+        public async Task<IActionResult> GetAllStudentsAsync()
         {
             var response = await _studentService.GetAllStudentsAsync();
             return Ok(response);
         }
+    }
 }

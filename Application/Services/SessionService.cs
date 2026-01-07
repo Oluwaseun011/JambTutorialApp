@@ -32,11 +32,7 @@ namespace Application.Services
         {
             _sessionRepository.Delete(Id);
         }
-        public async Task Update(Guid Id)
-        {
-            var session = Get(Id);
-            _sessionRepository.UpdateSession(session);
-        }
+       
         public async Task<Session?> Get(Guid Id)
         {
             return await _sessionRepository.GetSessionAsync(Id);
@@ -45,6 +41,11 @@ namespace Application.Services
         public Task<ICollection<Session>> GetAllSessions()
         {
             return _sessionRepository.GetSessionsAsync();
+        }
+
+        public Task Update(Guid Id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
