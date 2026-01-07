@@ -14,7 +14,7 @@ namespace Application.Interfaces.Repositories
           Task DeleteUser(User user);
 
           Task<User?> GetUser(Guid id);
-
-          Task UpdateUser(User user;
+          Task<User?> GetUserByUsername(string username);
+          Task UpdateUser(User user);
     }
 }

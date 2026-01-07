@@ -12,7 +12,7 @@ namespace Application.Interfaces.Services
     {
 
         BaseResponse<LoginResponseModel> Login(LoginRequestModel model);
-        Task<User> GetByUsername(string username);
-        Task<User> GetById(Guid id);
+        Task<User?> GetUserByUsername(string username);
+        Task<User?> GetById(Guid id);
     }
 }
