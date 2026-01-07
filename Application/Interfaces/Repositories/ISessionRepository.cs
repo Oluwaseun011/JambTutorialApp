@@ -12,7 +12,7 @@ namespace Application.Interfaces.Repositories
 
         Task AddsessionAssyn(Session session);
         void Delete(Guid id);
-        void Updatesession(Session session);
+        void UpdateSession(Session session);
         Task<Session> GetSessionAsync(Guid id);
         Task<ICollection<Session>> GetSessionsAsync();
 

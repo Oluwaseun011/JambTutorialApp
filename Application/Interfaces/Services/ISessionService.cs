@@ -10,8 +10,8 @@ namespace Application.Interfaces.Services
 {
     public interface ISessionService
     {
-        Task AddSession(SessionRequestModel model);
+        Task<SessionResponseModel> AddSession(SessionRequestModel model);
         Task Delete(Guid Id);
-        Task<List<Session>> GetAllSessions();
+        public Task<ICollection<Session>> GetAllSessions();
     }
 }
