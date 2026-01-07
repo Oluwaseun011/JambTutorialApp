@@ -40,6 +40,18 @@ namespace Infrastructure.Repositories
             return null;
         }
 
+        public async Task<User?> GetUserByUsername(string username)
+        {
+            foreach (var user in _context.Set<User>())
+            {
+               if(user.UserName == username)
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
+
         public async Task UpdateUser(User user)
         {
             _context.Set<User>().Update(user);
