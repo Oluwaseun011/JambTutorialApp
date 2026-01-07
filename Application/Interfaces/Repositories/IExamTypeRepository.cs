@@ -7,14 +7,10 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Repositories
 {
-    public interface IUserRepository
+    public interface IExamTypeRepository 
     {
-         Task CreateUserAsync(User user);
-
-          Task DeleteUser(User user);
-
-          Task<User?> GetUser(Guid id);
-
-          Task UpdateUser(User user;
+        Task AddAsync(ExamType examType);
+        Task<ExamType> GetAsync(Guid id);
+        Task<ICollection<ExamType>> GetAllAsync();
     }
 }
