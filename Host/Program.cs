@@ -2,6 +2,10 @@ using Infrastructure.Context;
 using Application.Interfaces.Repositories;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Application.Interfaces.Services;
+using Application.Services;
+using Application.Interfaces.Services;
+using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +17,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseMySQL(builder.Configuration.GetConnectionString("DefaultString")));
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<AppDbContext>();
 
