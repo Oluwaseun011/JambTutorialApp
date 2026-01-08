@@ -1,11 +1,15 @@
-﻿using Application.Dtos;
+﻿using Application.Constants;
+using Application.Dtos;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -13,39 +17,62 @@ namespace Application.Services
     public class SessionService:ISessionService
     {
         private readonly ISessionRepository _sessionRepository;
-        public SessionService(ISessionRepository sessionRepository)
+        private readonly IMemoryCache  _cache;
+        private readonly IUnitOfWork _unitOfWork;
+        public SessionService(ISessionRepository sessionRepository, IMemoryCache cache, IUnitOfWork unitOfWork)
         {
             _sessionRepository = sessionRepository;
+            _cache = cache;
+            _unitOfWork = unitOfWork;
         }
-        public async Task<SessionResponseModel> AddSession(CreateSessionRequestModel model)
+
+        public async Task<BaseResponse<Guid>> Create(CreateSessionRequestModel model)
         {
-            Session session = new Session
+
+            var sessionExist = await _sessionRepository.IsExistAsync(model.Name);
+            if (sessionExist) return BaseResponse<Guid>.Failure("Already exist");
+            var session = new Session
             {
-                Id = Guid.NewGuid(),
-                Name = model.Name,
+                 Name = model.Name,
             };
-            _sessionRepository.AddsessionAssyn(session);
-            return new SessionResponseModel(session.Id, session.Name);
+            await _sessionRepository.AddAsync(session);
+            await _unitOfWork.SaveAsync();
+
+
+            _cache.Remove(CacheKeys.all_session);
+            return BaseResponse<Guid>.Success(session.Id, "created successfully");
         }
 
-        public async Task Delete(Guid Id)
+        public async Task<BaseResponse<SessionDto?>> Get(Guid Id)
         {
-            _sessionRepository.Delete(Id);
+            var response = await _sessionRepository.GetSessionAsync(Id);
+            if (response == null)
+            {
+                return BaseResponse<SessionDto?>.Failure("Sessions not Found");
+            }
+            var session = new SessionDto
+            {
+                Name = response.Name,
+            };
+            return BaseResponse<SessionDto?>.Success(session, "Successful");
         }
-       
-        public async Task<Session?> Get(Guid Id)
-        {
-            return await _sessionRepository.GetSessionAsync(Id);
 
-        }
-        public Task<ICollection<Session>> GetAllSessions()
+        public async Task<BaseResponse<IEnumerable<SessionDto>>> GetSessions()
         {
-            return _sessionRepository.GetSessionsAsync();
-        }
+            if (!_cache.TryGetValue(CacheKeys.all_session, out IEnumerable<SessionDto> sessions))
+            {
+                var allSession = await _sessionRepository.GetSessionsAsync();
 
-        public Task Update(Guid Id)
-        {
-            throw new NotImplementedException();
+
+                sessions = allSession.Select(a => new SessionDto
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                }).ToList();
+
+                _cache.Set(CacheKeys.all_session, sessions);
+            }
+            return BaseResponse<IEnumerable<SessionDto>>.Success(sessions, "successful");
         }
     }
 }

@@ -38,6 +38,11 @@ namespace Infrastructure.Repositories
             return await _dbContext.Set<Domain.Entities.Session>().ToListAsync();
         }
 
+        public async Task<bool> IsExistAsync(string name)
+        {
+            return await _dbContext.Set<Domain.Entities.Session>().AnyAsync(x => x.Name == name);
+        }
+
         public void Update(Domain.Entities.Session session)
 
         {

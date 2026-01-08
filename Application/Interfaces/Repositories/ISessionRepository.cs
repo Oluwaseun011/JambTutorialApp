@@ -13,6 +13,7 @@ namespace Application.Interfaces.Repositories
         Task AddAsync(Session session);
         Task<Session?> GetSessionAsync(Guid id);
         Task<ICollection<Session>> GetSessionsAsync();
+        Task<bool> IsExistAsync(string name);
         void Update(Session session);
         void Delete(Session session);
 
