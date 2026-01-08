@@ -1,8 +1,7 @@
 using Infrastructure.Context;
 using Application.Interfaces.Repositories;
 using Infrastructure.Repositories;
-using Application.Interfaces.Services;
-using Application.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseMySQL(builder.Configuration.GetConnectionString("DefaultString")));
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<AppDbContext>();
 
