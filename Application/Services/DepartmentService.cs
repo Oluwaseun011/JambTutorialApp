@@ -43,9 +43,21 @@ namespace Application.Services
             return BaseResponse<Guid>.Success(dept.Id, "created successfully");
         }
 
-        public Task<BaseResponse<DepartmentDto?>> GetDepartment(Guid id)
+        public async Task<BaseResponse<DepartmentDto?>> GetDepartment(Guid id)
         {
-            throw new NotImplementedException();
+            var department = await _repository.GetDepartmentAsync(id);
+            if (department is null) return BaseResponse<DepartmentDto?>.Failure("not found");
+            var departmentDto = new DepartmentDto
+            {
+                Id = department.Id,
+                Name = department.Name,
+                ExamTypeId = department.ExamTypeId,
+                ExamTypeName = department.ExamType.Name,
+                Subjects = JsonSerializer.Deserialize<List<string>>(department.Subjects)
+            };
+
+            return BaseResponse<DepartmentDto?>.Success(departmentDto, "sucessful");
+
         }
 
         public async Task<BaseResponse<IEnumerable<DepartmentDto>>> GetDepartments()
@@ -68,9 +80,23 @@ namespace Application.Services
             return BaseResponse<IEnumerable<DepartmentDto>>.Success(departments, "successful");
         }
 
-        public Task<BaseResponse<ICollection<DepartmentDto>>> GetDepartmentsByExamType(Guid examTypeId)
+        public async Task<BaseResponse<ICollection<DepartmentDto>>> GetDepartmentsByExamType(Guid examTypeId)
         {
-            throw new NotImplementedException();
+        
+
+            var get = await _repository.GetDepartmentsByExamTypeAsync(examTypeId);
+            if (get is null) return BaseResponse<ICollection<DepartmentDto>>.Failure("not found");
+
+           var departments = get.Select(a => new DepartmentDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                ExamTypeId = a.ExamTypeId,
+                ExamTypeName = a.ExamType.Name,
+                Subjects = JsonSerializer.Deserialize<List<string>>(a.Subjects)
+            }).ToList();
+
+            return BaseResponse<ICollection<DepartmentDto>>.Success(departments, "successful");
         }
     }
 }

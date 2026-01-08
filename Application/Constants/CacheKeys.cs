@@ -10,5 +10,6 @@ namespace Application.Constants
     {
         public const string all_departments = "departments";
         public const string all_examTypes = "examTypes";
+        public const string all_students = "students";
     }
 }

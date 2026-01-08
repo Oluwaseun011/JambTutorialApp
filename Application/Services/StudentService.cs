@@ -1,7 +1,9 @@
-﻿using Application.Dtos;
+﻿using Application.Constants;
+using Application.Dtos;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,96 +15,74 @@ namespace Application.Services
     public class StudentService : IStudentService
     {
         private readonly IStudentRepository _studentRepository;
-        private readonly IUserRepository _userRepository;
-        public StudentService(IStudentRepository studentRepository, IUserRepository userRepository)
+        private readonly IMemoryCache _cache;
+        private readonly IUnitOfWork _unitOfWork;
+        public StudentService(IStudentRepository studentRepository, IMemoryCache cache, IUnitOfWork unitOfWork)
         {
             _studentRepository = studentRepository;
-            _userRepository = userRepository;
+            _cache = cache;
+            _unitOfWork = unitOfWork;
         }
-        public async Task<BaseResponse<ICollection<StudentDto>>> GetAllStudentsAsync()
+        public async Task<BaseResponse<IEnumerable<StudentDto>>> GetAllStudentsAsync()
         {
-            var response = await _studentRepository.GetStudentsAsync();
-            if(response is  null)
+            if(!_cache.TryGetValue(CacheKeys.all_students, out IEnumerable<StudentDto> students))
             {
-                return new BaseResponse<ICollection<StudentDto>>
+                var allStudents = await _studentRepository.GetStudentsAsync();
+                students = allStudents.Select(a => new StudentDto
                 {
-                    Status = false,
-                    Message = "No student found",
-                    Data = null
-                };
+                    Id = a.Id,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    UserName = a.UserName,
+                    Email = a.Email,
+                    PhoneNumber = a.PhoneNumber,
+                    ImgeUrl = a.ImgeUrl,
+                    Gender = a.Gender,
+                    Dob = a.Dob,
+                }).ToList();
+                _cache.Set(CacheKeys.all_students, students);
             }
-            return new BaseResponse<ICollection<StudentDto>>
-            {
-                Status = true,
-                Message = "Successful",
-                Data = response.Select(student => new StudentDto
-                {
-                    Id = student.Id,
-                    UserName = student.UserName,
-                    FirstName = student.FirstName,
-                    LastName = student.LastName,
-                    Email = student.Email
-                }).ToList()
-            };
+            return BaseResponse<IEnumerable<StudentDto>>.Success(students, "Successful");
+           
         }
 
-        public async Task<BaseResponse<StudentDto>> GetStudentAsync(string username)
+        public async Task<BaseResponse<StudentDto?>> GetStudentAsync(string username)
         {
             var response = await _studentRepository.GetStudentAsync(username);
-            if(response is null)
+            if (response == null) return BaseResponse<StudentDto>.Failure("Not found");
+            var student = new StudentDto
             {
-                return new BaseResponse<StudentDto>
-                {
-                    Status = false,
-                    Message = "Student not found",
-                    Data = null
-                };
-            }
-            return new BaseResponse<StudentDto>
-            {
-                Status = true,
-                Message = "Message",
-                Data = new StudentDto
-                {
-                    Id = response.Id,
-                    UserName = response.UserName,
-                    FirstName = response.FirstName,
-                    LastName = response.LastName,
-                    Email = response.Email
-                }
+                FirstName = response.FirstName,
+                LastName = response.LastName,
+                UserName = response.UserName,
+                Email = response.Email,
+                PhoneNumber = response.PhoneNumber,
+                ImgeUrl = response.ImgeUrl,
+                Gender = response.Gender,
+                Dob = response.Dob
             };
+            return BaseResponse<StudentDto?>.Success(student, "Successful");
         }
 
-        public async Task<BaseResponse<RegisterStudentResponseModel>> RegisterAsync(RegisterStudentRequestModel model)
+        public async Task<BaseResponse<Guid>> RegisterAsync(RegisterStudentRequestModel model)
         {
-            var student = new Student()
+            var studentExist = await _studentRepository.IsExist(model.UserName);
+            if (studentExist) return BaseResponse<Guid>.Failure("Already exist");
+            var student = new Student
             {
-                UserName = model.UserName,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
+                UserName = model.UserName,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Gender = model.Gender,
                 Dob = model.Dob
             };
             await _studentRepository.AddAsync(student);
-            var user = new User()
-            {
-                UserName = student.UserName,
-                HashPassword = model.Password
-            };
-            await _userRepository.CreateUserAsync(user);
-            return new BaseResponse<RegisterStudentResponseModel>()
-            {
-                Status = true,
-                Message = "Registration successful",
-                Data = new RegisterStudentResponseModel
-                {
-                    Id = student.Id,
-                    FirstName = student.FirstName,
-                    LastName = student.LastName
-                }
-            };
+            await _unitOfWork.SaveAsync();
+
+            _cache.Remove(CacheKeys.all_students);
+            return BaseResponse<Guid>.Success(student.Id, "Registration successful");
         }
     }
 }
