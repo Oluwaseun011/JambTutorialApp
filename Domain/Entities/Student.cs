@@ -14,6 +14,7 @@ namespace Domain.Entities
         public string UserName { get; set; } = default!;
         public string Email { get; set; } = default!;
         public string PhoneNumber { get; set; } = default!;
+        public string ImgeUrl { get; set; } = default!;
         public Gender Gender { get; set; }
         public DateTime Dob {  get; set; }
         public ICollection<StudentExamType> ExamTypes { get; set; } = new HashSet<StudentExamType>();
