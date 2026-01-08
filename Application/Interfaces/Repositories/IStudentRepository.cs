@@ -15,5 +15,6 @@ namespace Application.Interfaces.Repositories
         Task<ICollection<Student>> GetStudentsAsync();
         void Update(Student student);
         void Delete(Student student);
+        Task<bool> IsExist(string  userName);
     }
 }

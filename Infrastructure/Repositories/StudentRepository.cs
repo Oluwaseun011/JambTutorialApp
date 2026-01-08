@@ -44,6 +44,11 @@ namespace Infrastructure.Repositories
             return await _dbContext.Set<Student>().ToListAsync();  
         }
 
+        public async Task<bool> IsExist(string userName)
+        {
+            return await _dbContext.Set<Student>().AnyAsync(a  => a.UserName == userName);
+        }
+
         public void Update(Student student)
         {
             _dbContext.Update(student);
