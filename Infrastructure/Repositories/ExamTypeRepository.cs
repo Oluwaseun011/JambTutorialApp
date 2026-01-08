@@ -31,5 +31,10 @@ namespace Infrastructure.Repositories
         {
             return await _context.Set<ExamType>().FirstOrDefaultAsync(exam => exam.Id == id);
         }
+
+        public async Task<bool> IsExistAsync(string name)
+        {
+            return await _context.Set<ExamType>().AnyAsync(exam => exam.Name == name);
+        }
     }
 }
