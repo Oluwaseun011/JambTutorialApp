@@ -17,10 +17,10 @@ namespace Host.Controllers
             _departmentService = departmentService;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateDepartment(DepartmentRequestModel model)
+        public async Task<IActionResult> CreateDepartment(CreateDepartmentRequestModel model)
         {
-            var respone = await _departmentService.Add(model);
-            if (respone == null)
+            var respone = await _departmentService.Create(model);
+            if (!respone.IsSuccessful)
             {
                 return BadRequest();
             }
@@ -28,7 +28,7 @@ namespace Host.Controllers
 
         }
         [HttpGet("id")]
-        public async Task<ActionResult> GetDepartment(Guid id)
+        public async Task<IActionResult> GetDepartment(Guid id)
         {
            var departmentDto = await _departmentService.GetDepartment(id);
             if (departmentDto == null)
@@ -38,21 +38,21 @@ namespace Host.Controllers
             return Ok(departmentDto);
         }
 
-        [HttpGet("examTypeId")]
-        public async Task<ActionResult> GetDepartmentsByExamType(Guid examTypeId)
+        [HttpGet("examType/examTypeId")]
+        public async Task<IActionResult> GetDepartmentsByExamType(Guid examTypeId)
         {
-            var departmentDto = _departmentService.GetDepartmentsByExamType(examTypeId);
-            if (departmentDto == null)
+            var response = await _departmentService.GetDepartmentsByExamType(examTypeId);
+            if (!response.IsSuccessful)
             {
                 return BadRequest();
             }
-            return Ok(departmentDto);
+            return Ok(response);
         }
         [HttpGet]
         public async Task<IActionResult> GetDepartments()
         {
-            var response = await _departmentService.GetAllDepartments();
-            if (response.Data == null)
+            var response = await _departmentService.GetDepartments();
+            if (!response.IsSuccessful)
             {
                 return BadRequest();
             }

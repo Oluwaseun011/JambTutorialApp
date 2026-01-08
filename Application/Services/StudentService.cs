@@ -1,5 +1,6 @@
 ﻿using Application.Constants;
 using Application.Dtos;
+using Application.Interfaces.External;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;
@@ -17,11 +18,13 @@ namespace Application.Services
         private readonly IStudentRepository _studentRepository;
         private readonly IMemoryCache _cache;
         private readonly IUnitOfWork _unitOfWork;
-        public StudentService(IStudentRepository studentRepository, IMemoryCache cache, IUnitOfWork unitOfWork)
+        private readonly IUploadService _upload;
+        public StudentService(IStudentRepository studentRepository, IMemoryCache cache, IUnitOfWork unitOfWork, IUploadService upload)
         {
             _studentRepository = studentRepository;
             _cache = cache;
             _unitOfWork = unitOfWork;
+            _upload = upload;
         }
         public async Task<BaseResponse<IEnumerable<StudentDto>>> GetAllStudentsAsync()
         {
@@ -76,7 +79,8 @@ namespace Application.Services
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
                 Gender = model.Gender,
-                Dob = model.Dob
+                Dob = model.Dob,
+                ImgeUrl = await _upload.UploadImage(model.ImgeUrl)
             };
             await _studentRepository.AddAsync(student);
             await _unitOfWork.SaveAsync();
