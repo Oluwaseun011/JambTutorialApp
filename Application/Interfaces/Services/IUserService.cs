@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Services
 {
-    internal interface IUserService
+    public interface IUserService
     {
-
-        BaseResponse<LoginResponseModel> Login(LoginRequestModel model);
-        Task<User?> GetUserByUsername(string username);
-        Task<User?> GetById(Guid id);
+        Task<BaseResponse<LoginResponseModel>> Login(LoginRequestModel model);
     }
 }

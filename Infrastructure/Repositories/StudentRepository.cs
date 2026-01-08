@@ -24,17 +24,17 @@ namespace Infrastructure.Repositories
             await _dbContext.Set<Student>().AddAsync(student);
         }
 
-        public void Delete(Guid id)
+        public void Delete(Student student)
         {
-             _dbContext.Remove(id);
+             _dbContext.Remove(student);
         }
 
-        public async Task<Student> GetStudentAsync(string userName)
+        public async Task<Student?> GetStudentAsync(string userName)
         {
             return await _dbContext.Set<Student>().FirstOrDefaultAsync(a => a.UserName == userName);
         }
 
-        public async Task<Student> GetStudentByIdAsync(Guid id)
+        public async Task<Student?> GetStudentAsync(Guid id)
         {
             return await _dbContext.Set<Student>().FirstOrDefaultAsync(a => a.Id == id);
         }

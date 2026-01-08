@@ -9,9 +9,10 @@ namespace Application.Interfaces.Repositories
 {
     public interface IDepartmentRepository
     {
+        Task<bool> IsExistAsync(string name);
         Task AddAsync(Department department);
-        Task<Department> GetDepartmentAsync(Guid id);
+        Task<Department?> GetDepartmentAsync(Guid id);
         Task<ICollection<Department>> GetDepartmentsAsync();
-        Task<ICollection<Department>> GetDepartmentsAsyncByExamType(Guid examTypeId);
+        Task<ICollection<Department>> GetDepartmentsByExamTypeAsync(Guid examTypeId);
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    internal class UserService : IUserService
+    public class UserService : IUserService
     {
         public readonly IUserRepository _userRepository;
         public UserService(IUserRepository userRepository)

@@ -1,11 +1,14 @@
-﻿using Application.Dtos;
+﻿using Application.Constants;
+using Application.Dtos;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -13,74 +16,61 @@ namespace Application.Services
     public class DepartmentService : IDepartmentService
     {
         private readonly IDepartmentRepository _repository;
-        public DepartmentService(IDepartmentRepository repository)
+        private readonly IMemoryCache _cache;
+        private readonly IUnitOfWork _unitOfWork;
+        public DepartmentService(IDepartmentRepository repository, IMemoryCache cache, IUnitOfWork unitOfWork)
         {
             _repository = repository;
-        }
-        //IDepartmentRepository _repository = new DepartmentRepository();
-       
-        async Task<BaseResponse<DepartmentResponseModel>> IDepartmentService.Add(DepartmentRequestModel departmentRequestModel)
-        {
-            Department department = new Department
-            {
-                ExamType = departmentRequestModel.ExamType,
-                Name = departmentRequestModel.Name,
-                Subjects = departmentRequestModel.Subjects,
-            };
-            _repository.AddAsync(department);
-
-            return new BaseResponse<DepartmentResponseModel>
-            {
-                Status = true,
-                Message = $"Department created successfully.",
-                Data = new DepartmentResponseModel
-                (
-                    departmentRequestModel.Name,
-                    departmentRequestModel.Subjects
-                    )
-            };
+            _cache = cache;
+            _unitOfWork = unitOfWork;
         }
 
-        async Task<BaseResponse<ICollection<DepartmentDto>>> IDepartmentService.GetAllDepartments()
+        public async Task<BaseResponse<Guid>> Create(CreateDepartmentRequestModel model)
         {
-            _repository.GetDepartmentsAsync();
-            return new BaseResponse<ICollection<DepartmentDto>>
+            var deptExist = await _repository.IsExistAsync(model.Name);
+            if (deptExist) return BaseResponse<Guid>.Failure("Already exist");
+
+            var dept = new Department
             {
-                Status = true,
-                Message = "",
-                Data = new List<DepartmentDto>
-                (
-                    
-                    )
+                Name = model.Name,
+                ExamTypeId = model.ExamTypeId
             };
+
+            await _repository.AddAsync(dept);
+            await _unitOfWork.SaveAsync();
+
+            _cache.Remove(CacheKeys.all_departments);
+            return BaseResponse<Guid>.Success(dept.Id, "created successfully");
         }
 
-        async Task<BaseResponse<DepartmentDto?>> IDepartmentService.GetDepartment(Guid id)
+        public Task<BaseResponse<DepartmentDto?>> GetDepartment(Guid id)
         {
-            _repository.GetDepartmentAsync(id);
-            return new BaseResponse<DepartmentDto?>
-            { 
-                Status = true,
-                Message = "",
-                Data = new DepartmentDto
-                (
-          
-                    )
-            };
+            throw new NotImplementedException();
         }
 
-        async Task<BaseResponse<ICollection<Department>>> IDepartmentService.GetDepartmentsByExamType(Guid examTypeId)
+        public async Task<BaseResponse<IEnumerable<DepartmentDto>>> GetDepartments()
         {
-            _repository.GetDepartmentsAsyncByExamType(examTypeId);
-            return new BaseResponse<ICollection<Department>>
+            if(!_cache.TryGetValue(CacheKeys.all_departments, out IEnumerable<DepartmentDto> departments))
             {
-                Status = true,
-                Message = "",
-                Data = new List<Department>
-                (
+                var allDepartments = await _repository.GetDepartmentsAsync();
 
-                    )
-            };
+                departments = allDepartments.Select(a => new DepartmentDto
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    ExamTypeId = a.ExamTypeId,
+                    ExamTypeName = a.ExamType.Name,
+                    Subjects = JsonSerializer.Deserialize<List<string>>(a.Subjects)
+                }).ToList();
+
+                _cache.Set(CacheKeys.all_departments, departments);
+            }
+            return BaseResponse<IEnumerable<DepartmentDto>>.Success(departments, "successful");
+        }
+
+        public Task<BaseResponse<ICollection<DepartmentDto>>> GetDepartmentsByExamType(Guid examTypeId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

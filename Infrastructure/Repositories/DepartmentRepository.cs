@@ -22,9 +22,14 @@ namespace Infrastructure.Repositories
             await _context.Set<Department>().AddAsync(department);
         }
 
-        public async Task<Department> GetDepartmentAsync(Guid id)
+        public async Task<Department?> GetDepartmentAsync(Guid id)
         {
-            return await _context.Set<Department>().FirstOrDefaultAsync(x => x.Id == id);
+            return await _context
+                .Set<Department>()
+                .Include(a =>a.ExamType)
+                .Include(a => a.StudentDepartments)
+                .ThenInclude(a => a.Student)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<ICollection<Department>> GetDepartmentsAsync()
@@ -32,9 +37,19 @@ namespace Infrastructure.Repositories
             return await _context.Set<Department>().ToListAsync();
         }
 
-        public async Task<ICollection<Department>> GetDepartmentsAsyncByExamType(Guid examTypeId)
+        public async Task<ICollection<Department>> GetDepartmentsByExamTypeAsync(Guid examTypeId)
         {
-            return await _context.Set<Department>().Where(a => a.ExamTypeId == examTypeId).Include(x => x.ExamType).ToListAsync();
+            return await _context
+                .Set<Department>()
+                .Include(a => a.StudentDepartments)
+                .ThenInclude(a => a.Student)
+                .Where(a => a.ExamTypeId == examTypeId)
+                .ToListAsync();
+        }
+
+        public async Task<bool> IsExistAsync(string name)
+        {
+            return await _context .Set<Department>().AnyAsync(x => x.Name == name);
         }
     }
 }

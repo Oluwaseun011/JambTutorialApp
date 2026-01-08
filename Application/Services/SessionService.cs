@@ -17,7 +17,7 @@ namespace Application.Services
         {
             _sessionRepository = sessionRepository;
         }
-        public async Task<SessionResponseModel> AddSession(SessionRequestModel model)
+        public async Task<SessionResponseModel> AddSession(CreateSessionRequestModel model)
         {
             Session session = new Session
             {

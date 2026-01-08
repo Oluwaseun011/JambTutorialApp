@@ -13,16 +13,12 @@ namespace Application.Dtos
         public string Name { get; set; } = default!;
         public string Description { get; set; } = default!;
         public decimal Price { get; set; }
+        public ICollection<DepartmentDto> Departments { get; set; } = new HashSet<DepartmentDto>();
     }
-    public class ExamTypeRequestModel
+    public class CreateExamTypeRequestModel
     {
         public string Name { get; set; } = default!;
         public string Description { get; set; } = default!;
         public decimal Price { get; set; }
-    }
-    public class ExamTypeResponseModel
-    {
-        public Guid Id {get; set; }
-        public string Name { get; set; } = default!;
     }
 }

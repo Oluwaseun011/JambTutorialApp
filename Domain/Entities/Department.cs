@@ -12,6 +12,6 @@ namespace Domain.Entities
         public ExamType ExamType { get; set; } = default!;
         public string Name { get; set; } = default!;
         public string Subjects { get; set; } = default!;
-        public ICollection<StudentExamType> ExamTypes { get; set; } = new HashSet<StudentExamType>();
+        public ICollection<StudentDepartment> StudentDepartments { get; set; } = new HashSet<StudentDepartment>();
     }
 }

@@ -20,7 +20,7 @@ namespace Host.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Add(SessionRequestModel model)
+        public async Task<IActionResult> Add(CreateSessionRequestModel model)
         {
             await _sessionService.AddSession(model);
             return Ok();

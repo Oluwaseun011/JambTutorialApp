@@ -8,9 +8,11 @@ namespace Application.Dtos
 {
     public class SessionDto
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } 
         public string Name { get; set; } = default!;
     }
-    public record SessionRequestModel(string Name);
-    public record SessionResponseModel(Guid Id, string Name);
+    public class CreateSessionRequestModel
+    {
+        public string Name { get; set; } = default!;
+    }
 }

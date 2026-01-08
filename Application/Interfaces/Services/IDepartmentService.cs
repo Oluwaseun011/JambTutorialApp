@@ -10,9 +10,9 @@ namespace Application.Interfaces.Services
 {
     public interface IDepartmentService
     {
-        Task<BaseResponse<DepartmentResponseModel>> Add(DepartmentRequestModel department);
+        Task<BaseResponse<Guid>> Create(CreateDepartmentRequestModel model);
         Task<BaseResponse<DepartmentDto?>> GetDepartment(Guid id);
-        Task<BaseResponse<ICollection<DepartmentDto>>> GetAllDepartments();
-        Task<BaseResponse<ICollection<Department>>> GetDepartmentsByExamType(Guid examTypeId);
+        Task<BaseResponse<IEnumerable<DepartmentDto>>> GetDepartments();
+        Task<BaseResponse<ICollection<DepartmentDto>>> GetDepartmentsByExamType(Guid examTypeId);
     }
 }

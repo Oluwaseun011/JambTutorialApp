@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,7 @@ namespace Infrastructure.Context
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> opts) : base(opts)
-        {
-
-        }
+        {}
         public DbSet<User> Users { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Department> Departments { get; set; }
@@ -24,15 +23,16 @@ namespace Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<User>().HasData(
-                new User
-                {
-                    UserName = "admin@gmail.com",
-                    HashPassword = "admin123",
-                    Salt = "",
-                    Role = "Admin"
-                }
-                );
+            var user = new User
+            {
+                Id = Guid.Parse("048AC838-B778-47A3-B85F-AF54C30ECD09"),
+                UserName = "admin@yopmaail.com",
+                Salt = $"D4FD88A6-3544-47A0-A3D8-04D9DC1F3B08",
+                Role = "Admin"
+            };
+            var pass = $"{user.Salt}admin123";
+            user.HashPassword = new PasswordHasher<User>().HashPassword(user,pass);
+            modelBuilder.Entity<User>().HasData(user);
 
         }
     }

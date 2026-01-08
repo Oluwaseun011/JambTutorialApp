@@ -9,13 +9,16 @@ namespace Application.Dtos
 {
     public class DepartmentDto
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         public Guid ExamTypeId { get; set; }
-        public ExamType ExamType { get; set; } = default!;
+        public string ExamTypeName { get; set; } = default!;
         public string Name { get; set; } = default!;
-        public string Subjects { get; set; } = default!;
-        public ICollection<StudentExamType> ExamTypes { get; set; } = new HashSet<StudentExamType>();
+        public ICollection<string> Subjects { get; set; } = new HashSet<string>();
     }
-    public record DepartmentRequestModel(ExamType ExamType, string Name, string Subjects);
-    public record DepartmentResponseModel(string Name, string Subjects);
+    public class CreateDepartmentRequestModel
+    {
+        public Guid ExamTypeId { get; set; }
+        public string Name { get; set; } = default!;
+        public ICollection<string> Subjects { get; set; } = new HashSet<string>();
+    }
 }

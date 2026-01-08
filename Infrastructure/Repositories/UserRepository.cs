@@ -18,41 +18,22 @@ namespace Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task CreateUserAsync(User user)
+        public async Task AddAsync(User user)
         {
             await _context.Set<User>().AddAsync(user);
         }
 
-        public async Task DeleteUser(User user)
+        public void DeleteUser(User user)
         {
-           _context.Remove(user);
-        }
-        
-        public async Task<User?> GetUser(Guid id)
-        {
-            foreach (var item in _context.Set<User>())
-            {
-                if(item.Id == id)
-                {
-                    return  item;
-                }
-            }
-            return null;
+            _context.Users.Remove(user);
         }
 
-        public async Task<User?> GetUserByUsername(string username)
+        public async Task<User?> GetUserAsync(string username)
         {
-            foreach (var user in _context.Set<User>())
-            {
-               if(user.UserName == username)
-                {
-                    return user;
-                }
-            }
-            return null;
+            return await _context.Users.SingleOrDefaultAsync(a => a.UserName == username);
         }
 
-        public async Task UpdateUser(User user)
+        public void UpdateUser(User user)
         {
             _context.Set<User>().Update(user);
         }

@@ -10,11 +10,11 @@ namespace Application.Interfaces.Repositories
    public interface ISessionRepository
     {
 
-        Task AddsessionAssyn(Session session);
-        void Delete(Guid id);
-        void Updatesession(Session session);
-        Task<Session> GetSessionAsync(Guid id);
+        Task AddAsync(Session session);
+        Task<Session?> GetSessionAsync(Guid id);
         Task<ICollection<Session>> GetSessionsAsync();
+        void Update(Session session);
+        void Delete(Session session);
 
     }
 }

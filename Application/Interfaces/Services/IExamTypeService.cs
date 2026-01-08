@@ -9,8 +9,8 @@ namespace Application.Interfaces.Services
 {
     public interface IExamTypeService
     {
-        Task<BaseResponse<ExamTypeResponseModel>> Create (ExamTypeRequestModel model);
-        Task<BaseResponse<ExamTypeDto?>> GetExamType (Guid id);
-        Task<BaseResponse<ICollection<ExamTypeDto?>>> GetAllExamTypes ();
+        Task<BaseResponse<Guid>> Create(CreateExamTypeRequestModel model);
+        Task<BaseResponse<ExamTypeDto?>> GetExamType(Guid id);
+        Task<BaseResponse<IEnumerable<ExamTypeDto?>>> GetExamTypes ();
     }
 }

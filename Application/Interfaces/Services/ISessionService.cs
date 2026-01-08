@@ -12,10 +12,8 @@ namespace Application.Interfaces.Services
     public interface ISessionService
     {
 
-        Task<SessionResponseModel> AddSession(SessionRequestModel model);
-        Task Delete(Guid Id);
-        Task Update(Guid Id);
-         Task<Session?> Get(Guid Id);
-        Task<ICollection<Session>> GetAllSessions();
+        Task<BaseResponse<Guid>> Create(CreateSessionRequestModel model);
+        Task<BaseResponse<SessionDto?>> Get(Guid Id);
+        Task<BaseResponse<IEnumerable<SessionDto>>> GetSessions();
     }
 }

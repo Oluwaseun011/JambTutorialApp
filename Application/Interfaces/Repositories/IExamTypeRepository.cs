@@ -10,7 +10,7 @@ namespace Application.Interfaces.Repositories
     public interface IExamTypeRepository 
     {
         Task AddAsync(ExamType examType);
-        Task<ExamType> GetAsync(Guid id);
+        Task<ExamType?> GetAsync(Guid id);
         Task<ICollection<ExamType>> GetAllAsync();
     }
 }

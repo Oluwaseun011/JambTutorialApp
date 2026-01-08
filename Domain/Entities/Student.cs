@@ -17,6 +17,8 @@ namespace Domain.Entities
         public string ImgeUrl { get; set; } = default!;
         public Gender Gender { get; set; }
         public DateTime Dob {  get; set; }
-        public ICollection<StudentExamType> ExamTypes { get; set; } = new HashSet<StudentExamType>();
+        public int Age => DateTime.UtcNow.Year - Dob.Year;
+        public ICollection<StudentExamType> StudentExamTypes { get; set; } = new HashSet<StudentExamType>();
+        public ICollection<StudentDepartment> StudentDepartments { get; set; } = new HashSet<StudentDepartment>();
     }
 }

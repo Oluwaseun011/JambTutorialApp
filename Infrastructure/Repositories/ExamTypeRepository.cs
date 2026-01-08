@@ -24,10 +24,10 @@ namespace Infrastructure.Repositories
 
         public async Task<ICollection<ExamType>> GetAllAsync()
         {
-            return await _context.Set<ExamType>().ToListAsync();
+            return await _context.Set<ExamType>().Include(a => a.Departments).ToListAsync();
         }
 
-        public async Task<ExamType> GetAsync(Guid id)
+        public async Task<ExamType?> GetAsync(Guid id)
         {
             return await _context.Set<ExamType>().FirstOrDefaultAsync(exam => exam.Id == id);
         }
