@@ -13,5 +13,6 @@ namespace Application.Interfaces.Repositories
           Task<User?> GetUserAsync(string username);
           void UpdateUser(User user);
           void DeleteUser(User user);
+          Task<bool> IsExist(string userName);
     }
 }

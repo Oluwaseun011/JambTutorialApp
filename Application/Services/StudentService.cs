@@ -16,15 +16,17 @@ namespace Application.Services
     public class StudentService : IStudentService
     {
         private readonly IStudentRepository _studentRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMemoryCache _cache;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUploadService _upload;
-        public StudentService(IStudentRepository studentRepository, IMemoryCache cache, IUnitOfWork unitOfWork, IUploadService upload)
+        public StudentService(IStudentRepository studentRepository, IMemoryCache cache, IUnitOfWork unitOfWork, IUploadService upload, IUserRepository userRepository)
         {
             _studentRepository = studentRepository;
             _cache = cache;
             _unitOfWork = unitOfWork;
             _upload = upload;
+            _userRepository = userRepository;
         }
         public async Task<BaseResponse<IEnumerable<StudentDto>>> GetAllStudentsAsync()
         {
@@ -69,7 +71,7 @@ namespace Application.Services
 
         public async Task<BaseResponse<Guid>> RegisterAsync(RegisterStudentRequestModel model)
         {
-            var studentExist = await _studentRepository.IsExist(model.UserName);
+            var studentExist = await _userRepository.IsExist(model.UserName);
             if (studentExist) return BaseResponse<Guid>.Failure("Already exist");
             var student = new Student
             {
@@ -83,6 +85,11 @@ namespace Application.Services
                 ImgeUrl = await _upload.UploadImage(model.ImgeUrl)
             };
             await _studentRepository.AddAsync(student);
+            var user = new User
+            {
+                UserName = model.UserName
+            };
+            await _userRepository.AddAsync(user);
             await _unitOfWork.SaveAsync();
 
             _cache.Remove(CacheKeys.all_students);
