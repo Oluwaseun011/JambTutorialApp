@@ -18,20 +18,22 @@ namespace Host.Controllers
         public async Task<IActionResult> RegisterAsync(RegisterStudentRequestModel model)
         {
             var response = await _studentService.RegisterAsync(model);
-            return Created();
+            if (!response.IsSuccessful) return BadRequest();
+            return Ok(response);
         }
 
         [HttpGet("username")]
         public async Task<IActionResult> GetStudentAsync(string username)
         {
             var response = await _studentService.GetStudentAsync(username);
-            if (response is null) return NotFound();
+            if (!response.IsSuccessful) return NotFound();
             return Ok(response);
         }
         [HttpGet]
         public async Task<IActionResult> GetAllStudentsAsync()
         {
             var response = await _studentService.GetAllStudentsAsync();
+            if (!response.IsSuccessful) return NotFound();
             return Ok(response);
         }
     }

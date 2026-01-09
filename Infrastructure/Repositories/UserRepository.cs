@@ -33,6 +33,11 @@ namespace Infrastructure.Repositories
             return await _context.Users.SingleOrDefaultAsync(a => a.UserName == username);
         }
 
+            public async Task<bool> IsExist(string userName)
+        {
+            return await _context.Set<User>().AnyAsync(a => a.UserName == userName);
+        }
+
         public void UpdateUser(User user)
         {
             _context.Set<User>().Update(user);
