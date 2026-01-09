@@ -22,7 +22,7 @@ namespace Host.Controllers
         {
             BaseResponse<LoginResponseModel> response = await _userService.Login(model);
 
-            if (response.IsSuccessful == null)
+            if (!response.IsSuccessful)
             {
                 return BadRequest();
             }
