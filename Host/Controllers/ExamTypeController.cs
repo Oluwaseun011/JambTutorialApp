@@ -15,23 +15,25 @@ namespace Host.Controllers
             _examTypeService = examTypeService;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateAsync (ExamTypeRequestModel model)
+        public async Task<IActionResult> CreateAsync (CreateExamTypeRequestModel model)
         {
             var response = await _examTypeService.Create(model);
+            if (!response.IsSuccessful) return BadRequest();
             return Created();
         }
         [HttpGet("id")]
         public async Task<IActionResult> GetExamTypeById (Guid id)
         {
             var response = await _examTypeService.GetExamType(id);
-            if (response == null) return NotFound();
+            if (!response.IsSuccessful) return NotFound();
             return Ok(response);
         }
         
         [HttpGet]
         public async Task<IActionResult> GetAllExamType()
         {
-            var response = _examTypeService.GetAllExamTypes();
+            var response = await _examTypeService.GetExamTypes();
+            if (!response.IsSuccessful) return NotFound();
             return Ok(response);
         }
 
