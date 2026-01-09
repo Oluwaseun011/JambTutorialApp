@@ -9,5 +9,6 @@ namespace Application.Constants
     public class CacheKeys
     {
         public const string all_departments = "departments";
+        public const string all_examTypes = "examTypes";
     }
 }
