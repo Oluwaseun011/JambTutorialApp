@@ -12,42 +12,40 @@ namespace Host.Controllers
     public class SessionController : ControllerBase
     {
         private readonly ISessionService _sessionService;
-
         public SessionController(ISessionService sessionService)
         {
             _sessionService = sessionService;
         }
-
         [HttpPost]
-
-        public async Task<IActionResult> Add(CreateSessionRequestModel model)
+        public async Task<IActionResult> CreateSession(CreateSessionRequestModel model)
         {
-            await _sessionService.AddSession(model);
-            return Ok();
-        }
-
-        [HttpDelete]
-
-        public ActionResult<ISessionService> Delete(Guid id)
-        {
-            var response = _sessionService.Delete(id);
-
-            if (response == null)
+            var response = await _sessionService.Create(model);
+            if (response is null)
             {
                 return BadRequest();
             }
-            return Ok();
+            return Ok(response);
         }
 
+        [HttpGet("Id")]
+        public async Task<IActionResult> GetSession(Guid id)
+        {
+            var response = await _sessionService.Get(id);
+            if (response is null)
+            {
+                return BadRequest();
+            }
+            return Ok(response);
+        }
+        [HttpGet]
         public async Task<IActionResult> GetSessions()
         {
-            var sessions = await _sessionService.GetAllSessions();
-
-            if (sessions.Count < 1)
+            var response = await _sessionService.GetSessions();
+            if (response is null)
             {
                 return BadRequest();
             }
-            return Ok();
+            return Ok(response);
         }
     }
 }
